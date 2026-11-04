@@ -1,4 +1,5 @@
 import { renderToString } from 'react-dom/server';
+import React from 'react';
 import { App, type CalculatorHandlers } from '../../src/App';
 import { INITIAL_STATE } from '../../src/calculatorEngine';
 
@@ -88,14 +89,32 @@ describe('App', () => {
     capturedHandlers!.handleClearHistory();
     capturedHandlers!.handleToggleHistory();
 
-    // Button actions dispatcher
-    await capturedHandlers!.handleButtonAction('digit', '9');
-    await capturedHandlers!.handleButtonAction('decimal');
-    await capturedHandlers!.handleButtonAction('op', '×');
-    await capturedHandlers!.handleButtonAction('equals');
-    await capturedHandlers!.handleButtonAction('clearEntry');
-    await capturedHandlers!.handleButtonAction('allClear');
-    await capturedHandlers!.handleButtonAction('clearHistory');
+    // Keypad button click event handler
+    const mockClick = (action: string, value?: string) =>
+      ({
+        currentTarget: {
+          dataset: { action, value },
+        },
+      } as unknown as React.MouseEvent<HTMLButtonElement>);
+
+    capturedHandlers!.onKeypadButtonClick(mockClick('digit', '9'));
+    capturedHandlers!.onKeypadButtonClick(mockClick('decimal'));
+    capturedHandlers!.onKeypadButtonClick(mockClick('op', '×'));
+    capturedHandlers!.onKeypadButtonClick(mockClick('equals'));
+    capturedHandlers!.onKeypadButtonClick(mockClick('clearEntry'));
+    capturedHandlers!.onKeypadButtonClick(mockClick('allClear'));
+    capturedHandlers!.onKeypadButtonClick(mockClick('clearHistory'));
+    capturedHandlers!.onKeypadButtonClick({
+      currentTarget: { dataset: {} },
+    } as unknown as React.MouseEvent<HTMLButtonElement>);
+
+    // Recall click event handler
+    capturedHandlers!.onRecallButtonClick({
+      currentTarget: { dataset: { result: '42' } },
+    } as unknown as React.MouseEvent<HTMLButtonElement>);
+    capturedHandlers!.onRecallButtonClick({
+      currentTarget: { dataset: {} },
+    } as unknown as React.MouseEvent<HTMLButtonElement>);
 
     expect(actions).toContain('digit');
     expect(actions).toContain('decimal');

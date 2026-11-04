@@ -45,6 +45,16 @@ describe('Calculator API Service', () => {
     expect(result).toEqual(mockError);
   });
 
+  it('returns null on 500 internal server error', async () => {
+    global.fetch = jest.fn().mockResolvedValue({
+      ok: false,
+      status: 500,
+    });
+
+    const result = await requestBackendCalculation(5, 3, 'add');
+    expect(result).toBeNull();
+  });
+
   it('gracefully handles network failures returning null', async () => {
     global.fetch = jest.fn().mockRejectedValue(new Error('Network error'));
 
@@ -76,3 +86,4 @@ describe('Calculator API Service', () => {
     expect(history).toBeNull();
   });
 });
+
