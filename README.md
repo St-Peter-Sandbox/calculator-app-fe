@@ -1,4 +1,4 @@
-# calculator-app-frontend
+# Calculator App Frontend
 
 Created by ALPHACI as a React app standalone repository.
 
@@ -36,3 +36,49 @@ npm run build
 ```
 
 Create a feature branch, open a pull request into `dev`, and let ALPHACI promote green changes through `uat` to `main`.
+
+## Calculator quiz
+
+Check how well you know the calculator. Open a question to see the answer.
+
+<details>
+<summary>1. You press 5, +, 3, =. What does the display show?</summary>
+
+**8.** The equation line above it reads `5 + 3 = 8`.
+
+</details>
+
+<details>
+<summary>2. You press 5, +, 3, + without pressing equals. What does the display show now?</summary>
+
+**8.** The calculator works out each step as you chain operations, so the equation line reads `8 +` and waits for the next number.
+
+</details>
+
+<details>
+<summary>3. What happens when you divide 20 by 0?</summary>
+
+The display shows **Error** with the message *Cannot divide by zero*. The app keeps running, and typing a new digit starts over.
+
+</details>
+
+<details>
+<summary>4. What is the difference between C and AC?</summary>
+
+**C** clears only the number you are typing and keeps the operation in progress. **AC** resets the whole calculation. Neither one erases the history tape.
+
+</details>
+
+<details>
+<summary>5. What does 0.1 + 0.2 show?</summary>
+
+**0.3.** Results are rounded to 12 significant digits, so the usual floating point leftover (`0.30000000000000004`) never reaches the display.
+
+</details>
+
+<details>
+<summary>6. How do you reuse an answer from an earlier calculation?</summary>
+
+Open **Expand History**, find the calculation on the tape, and press **Recall**. Its result becomes the current number.
+
+</details>
