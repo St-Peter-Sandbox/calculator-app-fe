@@ -295,6 +295,10 @@ describe('Calculator Engine', () => {
 
       state = inputDecimal(state); // second decimal should be ignored
       expect(state.currentInput).toBe('0.5');
+
+      // Additional check when currentInput already contains decimal and isNewInput is false
+      const unchanged = inputDecimal(state);
+      expect(unchanged).toBe(state);
     });
 
     it('clears error on new decimal input', () => {
@@ -314,6 +318,7 @@ describe('Calculator Engine', () => {
     });
   });
 });
+
 
 
 

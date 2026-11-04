@@ -24,6 +24,8 @@ export interface CalculatorHandlers {
   handleClearHistory: () => void;
   handleToggleHistory: () => void;
   handleButtonAction: (type: string, value?: string) => Promise<void>;
+  onKeypadButtonClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
+  onRecallButtonClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
 }
 
 export interface AppProps {
@@ -82,53 +84,51 @@ export function App({
 
   const handleDigit = (digit: string) => {
     onAction?.('digit', digit);
-    setState((prev) => inputDigit(prev, digit));
+    setState(inputDigit(state, digit));
   };
 
   const handleDecimal = () => {
     onAction?.('decimal');
-    setState((prev) => inputDecimal(prev));
+    setState(inputDecimal(state));
   };
 
   const handleOperation = (op: string) => {
     onAction?.('operation', op);
-    setState((prev) => setOperation(prev, op));
+    setState(setOperation(state, op));
   };
 
   const handleEquals = async () => {
     onAction?.('equals');
     if (state.accumulator !== null && state.pendingOperation && !state.error) {
       const currentVal = parseFloat(state.currentInput);
-      requestBackendCalculation(state.accumulator, currentVal, state.pendingOperation).catch(
-        () => null,
-      );
+      requestBackendCalculation(state.accumulator, currentVal, state.pendingOperation);
     }
-    setState((prev) => calculateEquals(prev));
+    setState(calculateEquals(state));
   };
 
   const handleClearEntry = () => {
     onAction?.('clearEntry');
-    setState((prev) => clearEntry(prev));
+    setState(clearEntry(state));
   };
 
   const handleAllClear = () => {
     onAction?.('allClear');
-    setState((prev) => allClear(prev));
+    setState(allClear(state));
   };
 
   const handleRecall = (result: string) => {
     onAction?.('recall', result);
-    setState((prev) => recallHistory(prev, result));
+    setState(recallHistory(state, result));
   };
 
   const handleClearHistory = () => {
     onAction?.('clearHistory');
-    setState((prev) => clearHistoryTape(prev));
+    setState(clearHistoryTape(state));
   };
 
   const handleToggleHistory = () => {
     onAction?.('toggleHistory');
-    setIsHistoryOpen((prev) => !prev);
+    setIsHistoryOpen(!isHistoryOpen);
   };
 
   const handleButtonAction = async (action: string, value?: string) => {
@@ -157,6 +157,21 @@ export function App({
     }
   };
 
+  const onKeypadButtonClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    const action = e.currentTarget.dataset.action;
+    const value = e.currentTarget.dataset.value;
+    if (action) {
+      void handleButtonAction(action, value);
+    }
+  };
+
+  const onRecallButtonClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    const res = e.currentTarget.dataset.result;
+    if (res) {
+      handleRecall(res);
+    }
+  };
+
   if (testHook) {
     testHook({
       handleDigit,
@@ -169,6 +184,8 @@ export function App({
       handleClearHistory,
       handleToggleHistory,
       handleButtonAction,
+      onKeypadButtonClick,
+      onRecallButtonClick,
     });
   }
 
@@ -341,8 +358,10 @@ export function App({
               key={btn.testId}
               type="button"
               data-testid={btn.testId}
+              data-action={btn.action}
+              data-value={btn.value || ''}
               aria-label={btn.ariaLabel}
-              onClick={() => handleButtonAction(btn.action, btn.value)}
+              onClick={onKeypadButtonClick}
               style={{
                 ...getStyleForType(btn.styleType),
                 ...(btn.span ? { gridColumn: `span ${btn.span}` } : {}),
@@ -432,8 +451,9 @@ export function App({
                     <button
                       type="button"
                       data-testid={`recall-${item.id}`}
+                      data-result={item.result}
                       aria-label={`Recall result ${item.result}`}
-                      onClick={() => handleRecall(item.result)}
+                      onClick={onRecallButtonClick}
                       style={{
                         backgroundColor: '#0284c7',
                         color: '#ffffff',
@@ -494,4 +514,3 @@ const equalsButtonStyle: React.CSSProperties = {
   backgroundColor: '#16a34a',
   color: '#ffffff',
 };
-
