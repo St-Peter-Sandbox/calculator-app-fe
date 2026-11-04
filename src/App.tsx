@@ -100,8 +100,8 @@ export function App({
   const handleEquals = async () => {
     onAction?.('equals');
     if (state.accumulator !== null && state.pendingOperation && !state.error) {
-      const currentVal = parseFloat(state.currentInput);
-      requestBackendCalculation(state.accumulator, currentVal, state.pendingOperation);
+      const currentVal = Number.parseFloat(state.currentInput);
+      await requestBackendCalculation(state.accumulator, currentVal, state.pendingOperation).catch(() => null);
     }
     setState(calculateEquals(state));
   };
@@ -161,7 +161,7 @@ export function App({
     const action = e.currentTarget.dataset.action;
     const value = e.currentTarget.dataset.value;
     if (action) {
-      void handleButtonAction(action, value);
+      void handleButtonAction(action, value).catch(() => null);
     }
   };
 
@@ -514,3 +514,4 @@ const equalsButtonStyle: React.CSSProperties = {
   backgroundColor: '#16a34a',
   color: '#ffffff',
 };
+
