@@ -38,7 +38,7 @@ export function formatResult(value: number): string {
     return 'Error';
   }
   // Avoid floating-point weirdness (e.g., 0.1 + 0.2 = 0.30000000000000004)
-  const precisionClean = parseFloat(value.toPrecision(12));
+  const precisionClean = Number.parseFloat(value.toPrecision(12));
   return String(precisionClean);
 }
 
@@ -125,7 +125,7 @@ export function setOperation(state: CalculatorState, operation: string): Calcula
     return state;
   }
 
-  const currentVal = parseFloat(state.currentInput);
+  const currentVal = Number.parseFloat(state.currentInput);
 
   // If chaining operations (e.g., 5 + 3 then +)
   if (state.pendingOperation && !state.isNewInput && state.accumulator !== null) {
@@ -173,7 +173,7 @@ export function calculateEquals(state: CalculatorState): CalculatorState {
     return state;
   }
 
-  const currentVal = parseFloat(state.currentInput);
+  const currentVal = Number.parseFloat(state.currentInput);
   const { result, error } = executeOperation(
     state.accumulator,
     currentVal,
@@ -243,3 +243,4 @@ export function clearHistoryTape(state: CalculatorState): CalculatorState {
     history: [],
   };
 }
+
