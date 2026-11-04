@@ -1,4 +1,4 @@
-# calculator-app-frontend
+# Calculator App Frontend (Branch Alpha Conflict Version)
 
 Created by ALPHACI as a React app standalone repository.
 
